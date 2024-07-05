@@ -1,10 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [data, setData] = useState('');
+
+  useEffect(() => {
+    const evtSource = new EventSource('/stream');
+    evtSource.onmessage = function (event) {
+      console.log("New event:", event.data);
+      setData(event.data);
+    };
+  }, []);
 
   return (
     <>
@@ -22,7 +31,7 @@ function App() {
           count is {count}
         </button>
         <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+          {data}
         </p>
       </div>
       <p className="read-the-docs">
