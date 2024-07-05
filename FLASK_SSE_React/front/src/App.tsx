@@ -17,8 +17,8 @@ function App() {
     sse.onmessage = heandleStream;
 
     sse.onerror = (event: Event) => {
-      console.log(`error: ${event}`);
-      setData(`error: ${event}`);
+      console.log(event);
+      setData(`error occured`);
 
       sse.close();
     };
