@@ -7,12 +7,25 @@ function App() {
   const [count, setCount] = useState(0);
   const [data, setData] = useState('');
 
+  const heandleStream = (event: MessageEvent<any>) => {
+    setData(event.data);
+  }
+  
   useEffect(() => {
-    const evtSource = new EventSource('/stream');
-    evtSource.onmessage = function (event) {
-      console.log("New event:", event.data);
-      setData(event.data);
+    const sse = new EventSource('/stream');
+
+    sse.onmessage = heandleStream;
+
+    sse.onerror = (event: Event) => {
+      console.log(`error: ${event}`);
+      setData(`error: ${event}`);
+
+      sse.close();
     };
+
+    return () => {
+      sse.close();
+    }
   }, []);
 
   return (
