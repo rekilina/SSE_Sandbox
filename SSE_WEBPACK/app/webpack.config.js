@@ -38,18 +38,17 @@ module.exports = {
 				context: ['/stream'],
 				target: 'http://localhost:5000',
 				changeOrigin: true,
-				ws: true,
+				ws: false,
 				secure: false,
 				onProxyReq: (proxyReq, req, res) => {
 					proxyReq.setHeader('Connection', 'keep-alive'); 
 				},
-				bypass: function (req, res, proxyOptions) {
-					if (req.headers.accept && req.headers.accept.indexOf('text/event-stream') !== -1) {
-						console.log('Skipping proxy for SSE request');
-						return false;
-					}
-				}
-			}
+				onProxyRes: (proxyRes) => {
+					proxyRes.headers['Access-Control-Allow-Origin'] = 'http://localhost:9000';
+					proxyRes.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept';
+					proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS';
+				},
+			},
 		],
 	},
 };
